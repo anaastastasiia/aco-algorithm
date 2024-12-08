@@ -6,35 +6,6 @@ This is a web application that uses the Ant Colony Optimization (ACO) algorithm 
 ## Ant Colony Optimization (ACO)
 
 Ant Colony Optimization (ACO) is a probabilistic technique inspired by the behavior of ants foraging for food. The algorithm involves a number of artificial ants searching for an optimal solution by iteratively constructing paths and updating pheromone levels on paths they traverse. The pheromone levels guide subsequent ants toward shorter paths.
-
-### Key Components
-
-- **Pheromone Matrix**: Represents the pheromone levels on each edge (city-to-city connection). Initially, all edges have the same pheromone value, which is updated over time.
-  
-- **Ants**: A set of artificial ants that explore the cities and construct solutions. Each ant starts at a random city and chooses the next city based on pheromone levels and distances.
-  
-- **Transition Probability**: The probability \( P(i \to j) \) of moving from city `i` to city `j` is determined by the pheromone level and the inverse of the distance:
-  \[
-  P(i \to j) = \frac{{\tau(i, j)^\alpha \cdot \eta(i, j)^\beta}}{{\sum_{k \in C} \tau(i, k)^\alpha \cdot \eta(i, k)^\beta}}
-  \]
-  where:
-  - \( \tau(i, j) \) is the pheromone level on edge \( (i, j) \).
-  - \( \eta(i, j) = \frac{1}{D(i, j)} \) is the desirability or inverse of the distance.
-  - \( \alpha \) and \( \beta \) control the influence of pheromone and distance.
-
-- **Pheromone Update**: After all ants complete their tours, pheromone levels are updated based on the path quality:
-  \[
-  \tau(i, j) = (1 - \rho) \cdot \tau(i, j) + \Delta \tau(i, j)
-  \]
-  where \( \rho \) is the pheromone evaporation rate, and \( \Delta \tau(i, j) \) is the pheromone deposited by ants.
-
-### Parameters
-
-- **Number of ants (`num_ants`)**: The number of ants exploring the solution space.
-- **Number of iterations (`num_iterations`)**: The number of iterations the algorithm will run.
-- **Alpha (`α`)**: Controls the importance of pheromone in the decision-making process.
-- **Beta (`β`)**: Controls the influence of the distance on the decision-making process.
-- **Rho (`ρ`)**: The pheromone evaporation rate.
   
 ## Technologies
 - **Python**: The main backend technology.
