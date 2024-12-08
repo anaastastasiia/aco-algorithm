@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorytm mrówkowy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 20px;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        table {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form id="aco-form">
+            <div class="mb-3">
+                <label for="num_ants" class="form-label">Liczba mrówek:</label>
+                <input type="number" class="form-control" id="num_ants" required>
+            </div>
+            <div class="mb-3">
+                <label for="num_iterations" class="form-label">Liczba iteracji:</label>
+                <input type="number" class="form-control" id="num_iterations" required>
+            </div>
+            <div class="mb-3">
+                <label for="alpha" class="form-label">Współczynnik alfa (wpływ feromonu):</label>
+                <input type="number" class="form-control" id="alpha" step="0.1" required>
+            </div>
+            <div class="mb-3">
+                <label for="beta" class="form-label">Współczynnik beta (wpływ odległości):</label>
+                <input type="number" class="form-control" id="beta" step="0.1" required>
+            </div>
+            <div class="mb-3">
+                <label for="rho" class="form-label">Współczynnik odparowania feromonu:</label></label>
+                <input type="number" class="form-control" id="rho" step="0.1" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Uruchom</button>
+        </form>
+
+        <h3 class="mt-5">Wynik:</h3>
+        <div id="results">
+            <p><strong>Najlepsza długość ścieżki:</strong> <span id="best-length"></span></p>
+            <p><strong>Najlepsza ścieżka:</strong> <span id="best-path"></span></p>
+            <h4>Wizualizacja ścieżki:</h4>
+            <img id="path-graph" src="" alt="Wykres najlepszej ścieżki" class="img-fluid"/>
+        </div>
+
+        <h4 class="mt-5">Tabela odwiedzin:</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Lp.</th>
+                    <th>Miasto</th>
+                </tr>
+            </thead>
+            <tbody id="path-table-body"></tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('aco-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const formData = new FormData();
+            formData.append('num_ants', document.getElementById('num_ants').value);
+            formData.append('num_iterations', document.getElementById('num_iterations').value);
+            formData.append('alpha', document.getElementById('alpha').value);
+            formData.append('beta', document.getElementById('beta').value);
+            formData.append('rho', document.getElementById('rho').value);
+
+            fetch('/run_algorithm', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('best-length').innerText = data.best_length;
+                document.getElementById('best-path').innerText = data.best_path.join(' -> ');
+                document.getElementById('path-graph').src = 'data:image/png;base64,' + data.graph_url;
+
+                const tableBody = document.getElementById('path-table-body');
+                tableBody.innerHTML = ''; 
+
+                data.best_path.forEach((city, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${index + 1}</td><td>Miasto ${city}</td>`;
+                    tableBody.appendChild(row);
+                });
+            });
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
